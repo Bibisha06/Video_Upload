@@ -1,10 +1,17 @@
 import dotenv from "dotenv"
 import connectDB from "./db/index.js";
 import { app } from './app.js'
+import fs from "fs";
+import path from "path";
 
 dotenv.config({
     path: './.env'
 })
+
+const tempDir = './public/temp';
+if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true });
+}
 
 connectDB()
     .then(() => {

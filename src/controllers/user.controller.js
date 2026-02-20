@@ -57,12 +57,15 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avatar file is required")
   }
 
+  console.log("Uploading to Cloudinary...")
   const avatar = await uploadOnCloudinary(avatarLocalPath)
   const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
   if (!avatar) {
+    console.error("Avatar upload failed")
     throw new ApiError(400, "Avatar file is required")
   }
+  console.log("Creating user in DB...")
   const user = await User.create({
     fullName,
     avatar: avatar.secure_url,
@@ -78,6 +81,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(500, "error registering user")
   }
 
+  console.log("Registration successful")
   return res.status(201).json(
     new ApiResponse(200, createdUser, "user registered successfully")
   )

@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import API from "../api/axios";
 
 const AuthContext = createContext();
 
@@ -12,13 +12,9 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem("accessToken");
             if (token) {
                 try {
-
-                    const res = await fetch("http://localhost:8000/api/v1/users/current-user", {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
-                    const data = await res.json();
-                    if (data.success) {
-                        setUser(data.data);
+                    const res = await API.get("/users/current-user");
+                    if (res.data.success) {
+                        setUser(res.data.data);
                     } else {
                         throw new Error("Invalid session");
                     }
@@ -35,7 +31,6 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (data) => {
-
         setUser(data);
         localStorage.setItem("user", JSON.stringify(data));
     };

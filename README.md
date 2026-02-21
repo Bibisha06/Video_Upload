@@ -4,7 +4,7 @@ A comprehensive video-sharing platform featuring a robust **Express** backend an
 
 ---
 
-## �️ Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Core**: Node.js, Express.js

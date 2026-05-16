@@ -84,6 +84,10 @@ const getVideoById = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid video ID")
     }
 
+    await Video.findByIdAndUpdate(videoId, {
+        $inc: { views: 1 }
+    })
+
     const video = await Video.aggregate([
         {
             $match: {

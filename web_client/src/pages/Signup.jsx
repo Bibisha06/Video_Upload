@@ -3,13 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { Play, ArrowRight, User, Mail, Camera, ShieldCheck, Plus, AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import API from "../api/axios";
+import Navbar from "../components/Navbar";
+import { motion } from "framer-motion";
 
 const Signup = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
     const [fullName, setFullName] = useState("");
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -29,157 +30,102 @@ const Signup = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!avatar) {
-            setError("Please upload an avatar identity.");
-            return;
-        }
-
+        if (!avatar) { setError("Please upload a profile picture."); return; }
         setLoading(true);
         setError("");
-
         const formData = new FormData();
         formData.append("fullName", fullName);
         formData.append("username", username);
         formData.append("email", email);
         formData.append("password", password);
         formData.append("avatar", avatar);
-
         try {
-            await API.post("/users/register", formData, {
-                headers: { "Content-Type": "multipart/form-data" }
-            });
-
-
+            await API.post("/users/register", formData, { headers: { "Content-Type": "multipart/form-data" } });
             navigate("/login");
         } catch (err) {
             console.error("Signup error:", err);
-            setError(err.response?.data?.message || "Cloud connection or validation failure.");
-        } finally {
-            setLoading(false);
-        }
+            setError(err.response?.data?.message || "Registration failed. Please try again.");
+        } finally { setLoading(false); }
     };
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center p-6 py-12">
-            <div className="w-full max-w-xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                <div className="text-center space-y-2">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary rounded-2xl shadow-neon mb-4 rotate-3">
-                        <Play className="fill-white text-white ml-1" size={32} />
+        <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="min-h-screen bg-gradient-to-br from-background via-pink-soft to-lavender flex items-center justify-center p-6 py-12"
+        >
+            <Navbar />
+            <motion.div 
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                transition={{ type: "spring", damping: 20, stiffness: 100 }}
+                className="w-full max-w-xl space-y-8 relative z-10"
+            >
+                <div className="text-center space-y-3">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-2xl mb-4" style={{ boxShadow: '0 8px 24px rgba(217,70,239,0.3)' }}>
+                        <Play className="fill-white text-white ml-0.5" size={28} />
                     </div>
-                    <h1 className="text-4xl font-black italic tracking-tighter uppercase">Neon <span className="text-primary">Signup</span></h1>
-                    <p className="text-white/60 uppercase text-[10px] font-black tracking-widest">Establish your position in the universe</p>
+                    <h1 className="text-3xl font-extrabold tracking-tight text-text-main">Create Account</h1>
+                    <p className="text-text-muted text-sm">Join UpVi and start sharing your content</p>
                 </div>
 
                 {error && (
-                    <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-xl flex items-center gap-3 text-red-500 text-sm">
-                        <AlertCircle size={20} />
-                        <span>{error}</span>
+                    <div className="bg-red-50 border border-red-200 p-4 rounded-xl flex items-center gap-3 text-red-600 text-sm">
+                        <AlertCircle size={20} /><span>{error}</span>
                     </div>
                 )}
 
-                <div className="bg-surface border border-border p-8 rounded-2xl shadow-xl relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent" />
-
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="flex flex-col items-center mb-8">
+                <div className="bg-white border border-border p-6 md:p-8 rounded-2xl relative overflow-hidden" style={{ boxShadow: '0 8px 40px rgba(217,70,239,0.08)' }}>
+                    <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary via-accent to-secondary" />
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div className="flex flex-col items-center mb-4">
                             <label className="relative group cursor-pointer">
-                                <div className="w-24 h-24 bg-black border-2 border-dashed border-border rounded-full flex items-center justify-center group-hover:border-primary/50 transition-all overflow-hidden">
-                                    {avatarPreview ? (
-                                        <img src={avatarPreview} className="w-full h-full object-cover" alt="Preview" />
-                                    ) : (
-                                        <Camera className="text-border group-hover:text-primary transition-colors" size={32} />
-                                    )}
+                                <div className="w-24 h-24 bg-lavender border-2 border-dashed border-border-strong rounded-full flex items-center justify-center group-hover:border-primary/50 transition-all overflow-hidden">
+                                    {avatarPreview ? <img src={avatarPreview} className="w-full h-full object-cover" alt="Preview" /> : <Camera className="text-text-subtle group-hover:text-primary transition-colors" size={32} />}
                                 </div>
-                                <div className="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-neon">
-                                    <Plus size={16} />
-                                </div>
-                                <input
-                                    type="file"
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={handleAvatarChange}
-                                />
+                                <div className="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full" style={{ boxShadow: '0 4px 12px rgba(217,70,239,0.3)' }}><Plus size={14} /></div>
+                                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
                             </label>
-                            <span className="text-[10px] font-black uppercase tracking-widest text-white/60 mt-3">Upload Avatar</span>
+                            <span className="text-sm text-text-muted mt-3 font-medium">Upload Photo</span>
                         </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-white/60 px-1">Full Identity</label>
-                                <input
-                                    type="text"
-                                    placeholder="Your Name"
-                                    className="input-field"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
-                                    required
-                                />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium text-text-muted px-1">Full Name</label>
+                                <input type="text" placeholder="Your Name" className="input-field" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-white/60 px-1">Public Handle</label>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-medium text-text-muted px-1">Username</label>
                                 <div className="relative">
-                                    <input
-                                        type="text"
-                                        placeholder="username"
-                                        className="input-field pl-10"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        required
-                                    />
-                                    <User className="absolute left-3 top-2.5 text-white/40" size={18} />
+                                    <input type="text" placeholder="username" className="input-field pl-10" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                                    <User className="absolute left-3 top-3 text-text-subtle" size={18} />
                                 </div>
                             </div>
                         </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-white/60 px-1">Grid Mail</label>
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-text-muted px-1">Email</label>
                             <div className="relative">
-                                <input
-                                    type="email"
-                                    placeholder="voyager@neon.net"
-                                    className="input-field pl-10"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                                <Mail className="absolute left-3 top-2.5 text-white/40" size={18} />
+                                <input type="email" placeholder="you@example.com" className="input-field pl-10" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                                <Mail className="absolute left-3 top-3 text-text-subtle" size={18} />
                             </div>
                         </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-white/60 px-1">Secret Key</label>
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-text-muted px-1">Password</label>
                             <div className="relative">
-                                <input
-                                    type="password"
-                                    placeholder="••••••••"
-                                    className="input-field pl-10"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                                <ShieldCheck className="absolute left-3 top-2.5 text-white/40" size={18} />
+                                <input type="password" placeholder="••••••••" className="input-field pl-10" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                <ShieldCheck className="absolute left-3 top-3 text-text-subtle" size={18} />
                             </div>
                         </div>
-
-                        <button
-                            disabled={loading}
-                            className="btn-primary w-full h-12 flex items-center justify-center gap-2 mt-4"
-                        >
-                            {loading ? "Establishing Presence..." : (
-                                <>
-                                    <span>Join Neon</span>
-                                    <ArrowRight size={18} />
-                                </>
-                            )}
+                        <button disabled={loading} className="btn-primary w-full h-12 flex items-center justify-center gap-2 text-base mt-2">
+                            {loading ? "Creating account..." : <><span>Create Account</span><ArrowRight size={18} /></>}
                         </button>
                     </form>
                 </div>
-
-                <p className="text-center text-xs text-white/60 font-black uppercase tracking-widest">
-                    Already authorized? <Link to="/login" className="text-primary hover:underline italic ml-1">Login</Link>
+                <p className="text-center text-sm text-text-muted">
+                    Already have an account? <Link to="/login" className="text-primary hover:text-primary-hover font-semibold transition-colors ml-1">Sign In</Link>
                 </p>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 };
 

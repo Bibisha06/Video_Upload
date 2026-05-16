@@ -1,38 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-background: #000000;
-  --color-surface: #0a0a0a;
-  --color-primary: #ff0000;
-  --color-primary-hover: #cc0000;
-  --color-border: #262626;
-  --color-text-muted: #a3a3a3;
+  --color-background: #fdf2f8;
+  --color-surface: #ffffff;
+  --color-primary: #d946ef;
+  --color-primary-hover: #c026d3;
+  --color-primary-light: #f5d0fe;
+  --color-secondary: #f0abfc;
+  --color-border: #f3e8ff;
+  --color-border-strong: #e9d5ff;
+  --color-text-main: #1e1b2e;
+  --color-text-muted: #6b7280;
+  --color-text-subtle: #9ca3af;
+  --color-accent: #a855f7;
+  --color-accent-light: #e9d5ff;
+  --color-card-bg: #ffffff;
+  --color-pink-soft: #fce7f3;
+  --color-lavender: #ede9fe;
+  --color-lavender-deep: #ddd6fe;
 
-  --shadow-neon: 0 0 10px rgba(255, 0, 0, 0.4), 0 0 20px rgba(255, 0, 0, 0.2);
+  --shadow-soft: 0 4px 24px rgba(217, 70, 239, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 8px 32px rgba(217, 70, 239, 0.1), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-glow: 0 0 20px rgba(217, 70, 239, 0.15), 0 0 40px rgba(168, 85, 247, 0.08);
 }
 
 @layer base {
   body {
-    @apply bg-background text-white antialiased;
+    @apply bg-background text-text-main antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 }
 
 @layer components {
   .neon-card {
-    @apply bg-surface border border-border hover:border-primary/50 transition-all duration-300 rounded-lg overflow-hidden;
+    @apply bg-card-bg border border-border hover:border-primary/30 transition-all duration-300 rounded-2xl overflow-hidden;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .neon-card:hover {
+    box-shadow: var(--shadow-card);
+    transform: translateY(-2px);
   }
 
   .btn-primary {
-    @apply bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded font-bold transition-all shadow-neon uppercase tracking-wider text-sm;
+    @apply bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-xl font-semibold transition-all text-sm tracking-wide;
+    box-shadow: 0 4px 14px rgba(217, 70, 239, 0.3);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(217, 70, 239, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:disabled {
+    @apply opacity-60 cursor-not-allowed;
+    transform: none;
+    box-shadow: none;
   }
 
   .input-field {
-    @apply bg-black border border-border focus:border-primary/50 outline-none px-4 py-2 rounded transition-all w-full text-white;
+    @apply bg-white border border-border-strong focus:border-primary/50 outline-none px-4 py-2.5 rounded-xl transition-all w-full text-text-main placeholder-text-subtle;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  .input-field:focus {
+    box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.1), 0 1px 3px rgba(0, 0, 0, 0.04);
   }
 
   .text-muted {
-    @apply text-white/50;
+    @apply text-text-muted;
   }
 }
 
@@ -41,9 +78,13 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-black;
+  @apply bg-background;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-border hover:bg-primary/50 rounded-full;
+  @apply bg-lavender-deep hover:bg-primary/40 rounded-full;
+}
+
+::selection {
+  @apply bg-primary-light text-text-main;
 }

@@ -5,6 +5,7 @@ import VideoDetail from "./pages/VideoDetail";
 import Upload from "./pages/Upload";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
 import { AuthProvider } from "./context/AuthContext";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="watch/:videoId" element={<VideoDetail />} />
             <Route path="upload" element={<Upload />} />
+            <Route path="dashboard" element={<Dashboard />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
